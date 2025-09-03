@@ -171,7 +171,7 @@ private:
 
 namespace half_edge_polytope {
 namespace default_sizes {
-static constexpr UnsignedIndex_t complete_block_vertices = 64;
+static constexpr UnsignedIndex_t complete_block_vertices = 128;
 static constexpr UnsignedIndex_t complete_block_faces = 32;
 static constexpr UnsignedIndex_t complete_block_half_edges = 128;
 } // namespace default_sizes

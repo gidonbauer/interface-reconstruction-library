@@ -21,7 +21,7 @@ namespace IRL {
 namespace segmented_half_edge_polytope {
 namespace default_sizes {
 static constexpr UnsignedIndex_t segemented_max_faces = 64;
-static constexpr UnsignedIndex_t segmented_max_vertices = 64;
+static constexpr UnsignedIndex_t segmented_max_vertices = 128;
 }  // namespace default_sizes
 }  // namespace segmented_half_edge_polytope
 
