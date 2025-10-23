@@ -101,7 +101,7 @@ class LVIRACommon {
   PlanarSeparator getFinalReconstruction(void);
 
   /// \brief Set the optimization parameters.
-  void setOptimizationBehavior(const OptimizationBehavior &a_parameters);
+  void setOptimizationBehavior(const OptimizationBehavior& a_parameters);
 
   /// \brief Calculate the vector error correct_values_m - guess_values_m
   /// where both vectors already have weight applied.
@@ -125,7 +125,7 @@ class LVIRACommon {
   bool shouldComputeJacobian(const UnsignedIndex_t a_iteration,
                              const UnsignedIndex_t a_last_jacobian);
 
-#ifndef USING_INTEL_COMPILER
+#if !(defined(USING_INTEL_COMPILER) || defined(USING_NVIDIA_COMPILER))
   /// \brief Returns whether the minimum is reached.
   bool minimumReached(const Eigen::Matrix<double, static_cast<int>(kColumns),
                                           1>& a_delta) const;
@@ -349,4 +349,4 @@ class LVIRADebug : public LVIRAType {
 
 #include "irl/interface_reconstruction_methods/lvira_optimization.tpp"
 
-#endif // IRL_INTERFACE_RECONSTRUCTION_METHODS_LVIRA_OPTIMIZATION_H_
+#endif  // IRL_INTERFACE_RECONSTRUCTION_METHODS_LVIRA_OPTIMIZATION_H_

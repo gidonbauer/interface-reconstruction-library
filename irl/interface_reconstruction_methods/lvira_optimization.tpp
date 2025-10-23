@@ -72,7 +72,7 @@ bool LVIRACommon<CellType, kColumns>::shouldComputeJacobian(
   return a_iteration - a_last_jacobian > optimization_behavior_m.delay_jacobian_amount;
 }
 
-#ifndef USING_INTEL_COMPILER
+#if !(defined(USING_INTEL_COMPILER) || defined(USING_NVIDIA_COMPILER))
 template <class CellType, UnsignedIndex_t kColumns>
 bool LVIRACommon<CellType, kColumns>::minimumReached(
     const Eigen::Matrix<double, static_cast<int>(kColumns), 1>& a_delta) const {
