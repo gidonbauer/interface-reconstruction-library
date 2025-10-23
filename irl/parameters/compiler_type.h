@@ -10,12 +10,12 @@
 #ifndef IRL_PARAMETERS_COMPILER_TYPE_H_
 #define IRL_PARAMETERS_COMPILER_TYPE_H_
 
-#ifdef __INTEL_COMPILER
+#if defined(__INTEL_COMPILER) || defined(__INTEL_LLVM_COMPILER)
 #define USING_INTEL_COMPILER
-#else
-#ifdef __GNUC__
+#elif defined(__NVCOMPILER)
+#define USING_NVIDIA_COMPILER
+#elif defined(__GNUC__)
 #define USING_GNU_COMPILER
 #endif
-#endif
 
-#endif // IRL_PARAMETERS_COMPILER_TYPE_H_
+#endif  // IRL_PARAMETERS_COMPILER_TYPE_H_
