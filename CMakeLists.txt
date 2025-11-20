@@ -53,27 +53,6 @@ endif()
 # Find external packages needed by IRL
 find_package(Eigen3) # Provide -D EIGEN_PATH=/path/to/Eigen
 
-# Add packages IRL stores in external
-set(IRL_USE_ABSL ON)
-if(DEFINED USE_ABSL)
-  if(NOT USE_ABSL)
-    set(IRL_CXX_FLAGS "${IRL_CXX_FLAGS} -D IRL_NO_ABSL")
-  endif()
-endif()
-
-if(IRL_USE_ABSL)
-  # Add Abseil as a sub-directory but temporarily turn testing off.
-  set(ABSL_PROPAGATE_CXX_STD ON)
-  set(ABSEIL_DIR "${PROJECT_SOURCE_DIR}/external/abseil-cpp")
-  set(BUILD_TESTING_ORIG ${BUILD_TESTING})
-  set(BUILD_TESTING OFF)
-  set(CMAKE_INSTALL_PREFIX_ORIG "${CMAKE_INSTALL_PREFIX}")
-  set(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}/absl")
-  add_subdirectory(${ABSEIL_DIR})
-  set(CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX_ORIG}")
-  set(BUILD_TESTING ${BUILD_TESTING_ORIG})
-endif()
-
 # Path for Fortran Module files
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod )
 
@@ -82,9 +61,6 @@ if(BUILD_SHARED_LIBS)
   add_library(irl SHARED)
   add_library(irl_c SHARED)
   add_library(irl_fortran SHARED)
-  if(APPLE AND IRL_USE_ABSL)
-    target_link_libraries(irl PUBLIC "-framework CoreFoundation")
-  endif()
 else()
   add_library(irl STATIC)
   add_library(irl_c STATIC)
@@ -94,10 +70,6 @@ endif()
 # C++ IRL Base
 target_include_directories(irl PUBLIC "${PROJECT_SOURCE_DIR}")
 target_link_libraries(irl INTERFACE PUBLIC Eigen3::Eigen)
-if(IRL_USE_ABSL)
-  target_include_directories(irl SYSTEM PUBLIC "${PROJECT_SOURCE_DIR}/external/abseil-cpp")
-  target_link_libraries(irl PUBLIC absl::inlined_vector absl::flat_hash_map)
-endif()
 
 # C Interface
 target_link_libraries(irl_c PUBLIC irl)

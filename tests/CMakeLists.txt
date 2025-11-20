@@ -55,12 +55,6 @@ set_target_properties(irl_test
     CXX_STANDARD 17
 )
 
-if(IRL_USE_ABSL)
-  target_link_libraries(irl_test absl::inlined_vector absl::flat_hash_map)
-  target_include_directories(irl_test SYSTEM PRIVATE "${ABSEIL_DIR}")
-endif()
-
-
 # Add test files to executable. (This is irl_root/tests/src)
 add_subdirectory(./src)
 
