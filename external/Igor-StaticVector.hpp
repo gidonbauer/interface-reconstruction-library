@@ -19,8 +19,8 @@
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#ifndef IGOR_STATIC_VECTOR_HPP_
-#define IGOR_STATIC_VECTOR_HPP_
+#ifndef IGOR_EXT_STATIC_VECTOR_HPP_
+#define IGOR_EXT_STATIC_VECTOR_HPP_
 
 #include <cassert>
 #include <cstddef>
@@ -28,7 +28,7 @@
 #include <iterator>
 #include <type_traits>
 
-namespace Igor {
+namespace IgorExt {
 
 namespace detail {
 
@@ -675,30 +675,32 @@ class StaticVector {
   // - swap
 };
 
-}  // namespace Igor
+}  // namespace IgorExt
 
 // =================================================================================================
 template <typename Element>
-struct std::iterator_traits<Igor::detail::ReverseIterator<Element>> {
+struct std::iterator_traits<IgorExt::detail::ReverseIterator<Element>> {
   using difference_type =
-      typename Igor::detail::ReverseIterator<Element>::difference_type;
+      typename IgorExt::detail::ReverseIterator<Element>::difference_type;
   using value_type =
-      typename Igor::detail::ReverseIterator<Element>::value_type;
-  using pointer = typename Igor::detail::ReverseIterator<Element>::pointer;
-  using reference = typename Igor::detail::ReverseIterator<Element>::reference;
+      typename IgorExt::detail::ReverseIterator<Element>::value_type;
+  using pointer = typename IgorExt::detail::ReverseIterator<Element>::pointer;
+  using reference =
+      typename IgorExt::detail::ReverseIterator<Element>::reference;
   using iterator_category = std::random_access_iterator_tag;
 };
 
 template <typename Element>
-struct std::iterator_traits<Igor::detail::ConstReverseIterator<Element>> {
+struct std::iterator_traits<IgorExt::detail::ConstReverseIterator<Element>> {
   using difference_type =
-      typename Igor::detail::ConstReverseIterator<Element>::difference_type;
+      typename IgorExt::detail::ConstReverseIterator<Element>::difference_type;
   using value_type =
-      typename Igor::detail::ConstReverseIterator<Element>::value_type;
-  using pointer = typename Igor::detail::ConstReverseIterator<Element>::pointer;
+      typename IgorExt::detail::ConstReverseIterator<Element>::value_type;
+  using pointer =
+      typename IgorExt::detail::ConstReverseIterator<Element>::pointer;
   using reference =
-      typename Igor::detail::ConstReverseIterator<Element>::reference;
+      typename IgorExt::detail::ConstReverseIterator<Element>::reference;
   using iterator_category = std::random_access_iterator_tag;
 };
 
-#endif  // IGOR_STATIC_VECTOR_HPP_
+#endif  // IGOR_EXT_STATIC_VECTOR_HPP_

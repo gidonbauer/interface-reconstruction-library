@@ -17,7 +17,7 @@
 namespace IRL {
 
 template <class T, std::size_t BuffSizeInElements>
-using SmallVector = Igor::StaticVector<T, BuffSizeInElements>;
+using SmallVector = IgorExt::StaticVector<T, BuffSizeInElements>;
 
 }
 
