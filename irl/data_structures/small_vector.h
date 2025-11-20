@@ -12,7 +12,7 @@
 
 #if 1
 
-#include "external/Igor-StaticVector/StaticVector.hpp"
+#include "external/Igor-StaticVector.hpp"
 
 namespace IRL {
 

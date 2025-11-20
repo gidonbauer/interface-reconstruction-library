@@ -12,7 +12,7 @@
 
 #if 1
 
-#include "external/flat_hash_map/flat_hash_map.hpp"
+#include "external/flat_hash_map.hpp"
 namespace IRL {
 template <class KeyType, class ValueType>
 using unordered_map = ska::flat_hash_map<KeyType, ValueType>;
