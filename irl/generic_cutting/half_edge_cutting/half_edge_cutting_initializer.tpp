@@ -52,8 +52,8 @@ public:
 
   template <class GeometryType>
   std::size_t getID(const GeometryType &a_geometry) {
-    static bool already_set = false;
-    static std::size_t type_id = static_cast<std::size_t>(-1);
+    thread_local static bool already_set = false;
+    thread_local static std::size_t type_id = static_cast<std::size_t>(-1);
     if (!already_set) {
       already_set = true;
       type_id = template_polytopes_m.size();
@@ -199,7 +199,7 @@ cutThroughHalfEdgeStructures(const EncompassingType &a_polytope,
 template <class VertexType>
 HalfEdgeGeometryInitializer<HalfEdgePolyhedron<VertexType>> &
 getHalfEdgePolyhedronStorage(void) {
-  static HalfEdgeGeometryInitializer<HalfEdgePolyhedron<VertexType>> storage;
+  thread_local static HalfEdgeGeometryInitializer<HalfEdgePolyhedron<VertexType>> storage;
   return storage;
 }
 
@@ -238,7 +238,7 @@ getHalfEdgePolyhedron(const GeometryType &a_geometry) {
 
 template <class VertexType>
 HalfEdgePolygon<VertexType> &getHalfEdgePolygonStorage(void) {
-  static HalfEdgePolygon<VertexType> storage;
+  thread_local static HalfEdgePolygon<VertexType> storage;
   return storage;
 }
 
@@ -263,7 +263,7 @@ setHalfEdgeStructure(const EncompassingGeometryType &a_geometry) {
   // since a GeneralPolyhedron doesn't have a fixed number of vertices or
   // connectivity like other polyhedrons in IRL, the connectivity cannot
   // simply be stored and copied over.
-  static HalfEdgePolyhedron<typename EncompassingGeometryType::pt_type>
+  thread_local static HalfEdgePolyhedron<typename EncompassingGeometryType::pt_type>
       complete_polyhedron_buffer;
   a_geometry.setHalfEdgeVersion(&complete_polyhedron_buffer);
   return complete_polyhedron_buffer;
@@ -273,11 +273,11 @@ template <class EncompassingGeometryType>
 enable_if_t<is_tri<EncompassingGeometryType>::value,
             HalfEdgePolygon<typename EncompassingGeometryType::pt_type> &>
 setHalfEdgeStructure(const EncompassingGeometryType &a_geometry) {
-  static bool already_set = false;
-  static HalfEdgePolygon<typename EncompassingGeometryType::pt_type>
+  thread_local static bool already_set = false;
+  thread_local static HalfEdgePolygon<typename EncompassingGeometryType::pt_type>
       half_edge_geometry_template;
 
-  static HalfEdgePolygon<typename EncompassingGeometryType::pt_type>
+  thread_local static HalfEdgePolygon<typename EncompassingGeometryType::pt_type>
       complete_polygon_buffer;
 
   if (already_set) {

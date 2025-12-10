@@ -243,7 +243,7 @@ void getVolumeMomentsForPolytopeStaticStructWrapper<
         HalfEdgePolytopeType *a_complete_polytope,
         const ReconstructionType &a_reconstruction,
         ReturnType *a_moments_to_return) {
-  static EncounteredIdList id_list;
+  thread_local static EncounteredIdList id_list;
   splitAndShareThroughLinks(a_polytope, a_complete_polytope, a_reconstruction,
                             &id_list, a_moments_to_return);
   if (a_polytope->getNumberOfFaces() > 0) {
@@ -288,7 +288,7 @@ void getVolumeMomentsForPolytopeStaticStructWrapper<
         HalfEdgePolytopeType *a_complete_polytope,
         const ReconstructionType &a_reconstruction,
         ReturnType *a_moments_to_return) {
-  static EncounteredIdList id_list;
+  thread_local static EncounteredIdList id_list;
   splitAndShareThroughLinks(a_polytope, a_complete_polytope, a_reconstruction,
                             &id_list, a_moments_to_return);
   using WantedVolumeMomentsType = typename ReturnType::contained_type;
@@ -312,7 +312,7 @@ void getVolumeMomentsForPolytopeStaticStructWrapper<
         HalfEdgePolytopeType *a_complete_polytope,
         const ReconstructionType &a_reconstruction,
         ReturnType *a_moments_to_return) {
-  static EncounteredIdList id_list;
+  thread_local static EncounteredIdList id_list;
   splitAndShareThroughLinks(a_polytope, a_complete_polytope, a_reconstruction,
                             &id_list, a_moments_to_return);
   using WantedVolumeMomentsType = typename ReturnType::contained_type;
