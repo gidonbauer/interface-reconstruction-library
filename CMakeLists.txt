@@ -113,16 +113,6 @@ install(DIRECTORY "${CMAKE_SOURCE_DIR}/irl" # source directory
         FILES_MATCHING # install only matched files
         PATTERN "*.tpp"# select header files
 )
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/external/abseil-cpp" # source directory
-        DESTINATION "include/external" # target directory
-        FILES_MATCHING # install only matched files
-        PATTERN "*.h"# select header files
-)
-install(DIRECTORY "${CMAKE_SOURCE_DIR}/external/abseil-cpp" # source directory
-        DESTINATION "include/external" # target directory
-        FILES_MATCHING # install only matched files
-        PATTERN "*.inc"# select header files
-)
 
 if(IRL_BUILD_FORTRAN)
   install(TARGETS irl_c EXPORT "irl_c_exp" ARCHIVE DESTINATION "lib")
