@@ -300,9 +300,6 @@ class ConstReverseIterator {
 // =================================================================================================
 template <typename Element, size_t CAPACITY>
 class StaticVector {
-  detail::UninitializedArray<Element, CAPACITY> m_storage{};
-  size_t m_size = 0;
-
  public:
   using value_type = Element;
   using size_type = size_t;
@@ -316,14 +313,19 @@ class StaticVector {
   using reverse_iterator = detail::ReverseIterator<Element>;
   using const_reverse_iterator = detail::ConstReverseIterator<Element>;
 
+ private:
+  detail::UninitializedArray<Element, CAPACITY> m_storage{};
+  size_type m_size = 0;
+
+ public:
   static constexpr auto constructor_and_destructor_are_cheap =
       detail::UninitializedArray<
           Element, CAPACITY>::constructor_and_destructor_are_cheap;
 
   constexpr StaticVector() noexcept = default;
-  constexpr StaticVector(size_t size,
+  constexpr StaticVector(size_type size,
                          const Element& init = Element{}) noexcept {
-    for (size_t i = 0; i < size; ++i) {
+    for (size_type i = 0; i < size; ++i) {
       push_back(init);
     }
   }
@@ -340,7 +342,7 @@ class StaticVector {
     }
   }
 
-  template <typename OtherElement, size_t OTHER_CAPACITY>
+  template <typename OtherElement, size_type OTHER_CAPACITY>
   constexpr StaticVector(
       const StaticVector<OtherElement, OTHER_CAPACITY>& other) noexcept {
     if constexpr (OTHER_CAPACITY > CAPACITY) {
@@ -360,7 +362,7 @@ class StaticVector {
     }
   }
 
-  template <typename OtherElement, size_t OTHER_CAPACITY>
+  template <typename OtherElement, size_type OTHER_CAPACITY>
   constexpr StaticVector(
       StaticVector<OtherElement, OTHER_CAPACITY>&& other) noexcept {
     if constexpr (OTHER_CAPACITY > CAPACITY) {
@@ -385,7 +387,7 @@ class StaticVector {
     return *this;
   }
 
-  template <typename OtherElement, size_t OTHER_CAPACITY>
+  template <typename OtherElement, size_type OTHER_CAPACITY>
   constexpr auto operator=(
       const StaticVector<OtherElement, OTHER_CAPACITY>& other) noexcept
       -> StaticVector& {
@@ -412,7 +414,7 @@ class StaticVector {
     return *this;
   }
 
-  template <typename OtherElement, size_t OTHER_CAPACITY>
+  template <typename OtherElement, size_type OTHER_CAPACITY>
   constexpr auto operator=(
       StaticVector<OtherElement, OTHER_CAPACITY>&& other) noexcept
       -> StaticVector& {
@@ -432,28 +434,28 @@ class StaticVector {
   // constexpr ~StaticVector() noexcept = default;
   ~StaticVector() noexcept {
     if constexpr (!std::is_trivially_destructible_v<Element>) {
-      for (size_t i = 0; i < m_size; ++i) {
+      for (size_type i = 0; i < m_size; ++i) {
         std::destroy_at(m_storage.data() + i);
       }
     }
   }
 
   // ---------------------------------------------------------------------------
-  constexpr void assign(size_t count, const Element& value) noexcept {
+  constexpr void assign(size_type count, const Element& value) noexcept {
     assert(count <= CAPACITY &&
            "Size of vector must be less than or equal to the capacity.");
 
     clear();
-    for (size_t i = 0; i < count; ++i) {
+    for (size_type i = 0; i < count; ++i) {
       push_back(value);
     }
   }
 
   // ---------------------------------------------------------------------------
-  [[nodiscard]] constexpr auto operator[](size_t idx) noexcept -> reference {
+  [[nodiscard]] constexpr auto operator[](size_type idx) noexcept -> reference {
     return *(m_storage.data() + idx);
   }
-  [[nodiscard]] constexpr auto operator[](size_t idx) const noexcept
+  [[nodiscard]] constexpr auto operator[](size_type idx) const noexcept
       -> const_reference {
     return *(m_storage.data() + idx);
   }
@@ -553,7 +555,7 @@ class StaticVector {
   // ---------------------------------------------------------------------------
   constexpr void clear() noexcept {
     if constexpr (!std::is_trivially_destructible_v<Element>) {
-      for (size_t i = 0; i < m_size; ++i) {
+      for (size_type i = 0; i < m_size; ++i) {
         std::destroy_at(m_storage.data() + i);
       }
     }
@@ -608,6 +610,20 @@ class StaticVector {
     }
   }
 
+  constexpr void resize(size_type count, const Element& value) noexcept {
+    assert(count <= CAPACITY &&
+           "Count exceeds maximum capacity of static vector.");
+    if (count > m_size) {
+      const auto old_size = m_size;
+      m_size = count;
+      for (auto i = old_size; i < m_size; ++i) {
+        (*this)[i] = value;
+      }
+    } else {
+      m_size = count;
+    }
+  }
+
   // ---------------------------------------------------------------------------
   constexpr auto insert(const_iterator pos, const Element& value) noexcept
       -> const_iterator {
@@ -615,11 +631,11 @@ class StaticVector {
     const difference_type idx = std::distance(cbegin(), pos);
     assert(idx >= 0 && "Invalid iterator");
 
-    for (size_t i = m_size; i > static_cast<size_t>(idx); --i) {
+    for (size_type i = m_size; i > static_cast<size_type>(idx); --i) {
       (*this)[i] = std::move((*this)[i - 1]);
     }
 
-    (*this)[static_cast<size_t>(idx)] = value;
+    (*this)[static_cast<size_type>(idx)] = value;
     m_size += 1;
     return pos;
   }
@@ -631,11 +647,11 @@ class StaticVector {
     const difference_type idx = std::distance(cbegin(), pos);
     assert(idx >= 0 && "Invalid iterator");
 
-    for (size_t i = m_size; i > static_cast<size_t>(idx); --i) {
+    for (size_type i = m_size; i > static_cast<size_type>(idx); --i) {
       (*this)[i] = std::move((*this)[i - 1]);
     }
 
-    (*this)[static_cast<size_t>(idx)] = std::move(value);
+    (*this)[static_cast<size_type>(idx)] = std::move(value);
     m_size += 1;
     return pos;
   }
@@ -649,9 +665,9 @@ class StaticVector {
 
     const auto num_elems_removed = std::distance(first, last);
     assert(num_elems_removed >= 0 &&
-           m_size >= static_cast<size_t>(num_elems_removed) &&
+           m_size >= static_cast<size_type>(num_elems_removed) &&
            "Invalid iterator pair");
-    m_size -= static_cast<size_t>(num_elems_removed);
+    m_size -= static_cast<size_type>(num_elems_removed);
 
     return first;
   }
@@ -667,9 +683,9 @@ class StaticVector {
 
     const auto num_elems_removed = std::distance(first, last);
     assert(num_elems_removed >= 0 &&
-           m_size >= static_cast<size_t>(num_elems_removed) &&
+           m_size >= static_cast<size_type>(num_elems_removed) &&
            "Invalid iterator pair");
-    m_size -= static_cast<size_t>(num_elems_removed);
+    m_size -= static_cast<size_type>(num_elems_removed);
 
     return first;
   }
