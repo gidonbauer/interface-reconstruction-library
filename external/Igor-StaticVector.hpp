@@ -333,8 +333,7 @@ class StaticVector {
     }
   }
 
-  // - Copy constructor
-  // ----------------------------------------------------------------------------
+  // - Copy constructor --------------------------------------------------------
   constexpr StaticVector(const StaticVector& other) noexcept {
     for (const auto& e : other) {
       push_back(e);
@@ -354,8 +353,7 @@ class StaticVector {
     }
   }
 
-  // - Move constructor
-  // ----------------------------------------------------------------------------
+  // - Move constructor --------------------------------------------------------
   constexpr StaticVector(StaticVector&& other) noexcept {
     for (auto& e : other) {
       push_back(std::move(e));
@@ -375,8 +373,7 @@ class StaticVector {
     }
   }
 
-  // - Copy assignment
-  // -----------------------------------------------------------------------------
+  // - Copy assignment ---------------------------------------------------------
   constexpr auto operator=(const StaticVector& other) noexcept
       -> StaticVector& {
     if (this != &other) {
@@ -404,8 +401,7 @@ class StaticVector {
     return *this;
   }
 
-  // - Move assignment
-  // -----------------------------------------------------------------------------
+  // - Move assignment ---------------------------------------------------------
   constexpr auto operator=(StaticVector&& other) noexcept -> StaticVector& {
     if (this != &other) {
       clear();
@@ -432,7 +428,7 @@ class StaticVector {
     return *this;
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   // constexpr ~StaticVector() noexcept = default;
   ~StaticVector() noexcept {
     if constexpr (!std::is_trivially_destructible_v<Element>) {
@@ -442,7 +438,18 @@ class StaticVector {
     }
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  constexpr void assign(size_t count, const Element& value) noexcept {
+    assert(count <= CAPACITY &&
+           "Size of vector must be less than or equal to the capacity.");
+
+    clear();
+    for (size_t i = 0; i < count; ++i) {
+      push_back(value);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
   [[nodiscard]] constexpr auto operator[](size_t idx) noexcept -> reference {
     return *(m_storage.data() + idx);
   }
@@ -451,7 +458,7 @@ class StaticVector {
     return *(m_storage.data() + idx);
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   [[nodiscard]] constexpr auto data() noexcept -> pointer {
     return m_storage.data();
   }
@@ -459,7 +466,7 @@ class StaticVector {
     return m_storage.data();
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   [[nodiscard]] constexpr auto empty() const noexcept -> bool {
     return m_size == 0;
   }
@@ -479,7 +486,7 @@ class StaticVector {
   }
   constexpr void shrink_to_fit() const noexcept { /* NOOP */ }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   [[nodiscard]] constexpr auto begin() noexcept -> iterator {
     return m_storage.data();
   }
@@ -499,7 +506,7 @@ class StaticVector {
     return m_storage.data() + m_size;
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   [[nodiscard]] constexpr auto rbegin() noexcept -> reverse_iterator {
     return reverse_iterator{m_storage.data() +
                             static_cast<difference_type>(m_size) - 1};
@@ -525,7 +532,7 @@ class StaticVector {
     return const_reverse_iterator{m_storage.data() - 1};
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   [[nodiscard]] constexpr auto front() noexcept -> reference {
     assert(m_size > 0 && "Vector must contain at least one element.");
     return operator[](0);
@@ -543,7 +550,7 @@ class StaticVector {
     return operator[](m_size - 1);
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   constexpr void clear() noexcept {
     if constexpr (!std::is_trivially_destructible_v<Element>) {
       for (size_t i = 0; i < m_size; ++i) {
@@ -553,7 +560,7 @@ class StaticVector {
     m_size = 0;
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   constexpr void push_back(const Element& e) noexcept {
     assert(m_size < CAPACITY && "Size may not exceed capacity.");
     // std::construct_at(m_storage.data() + m_size, e);
@@ -567,7 +574,7 @@ class StaticVector {
     m_size += 1;
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   template <typename... Args>
   constexpr void emplace_back(Args&&... args) noexcept {
     assert(m_size < CAPACITY && "Size may not exceed capacity.");
@@ -577,7 +584,7 @@ class StaticVector {
     m_size += 1;
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   constexpr auto pop_back() noexcept -> value_type {
     assert(m_size > 0 && "Vector cannot be empty.");
     m_size -= 1;
@@ -586,7 +593,7 @@ class StaticVector {
     return tmp;
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   constexpr void resize(size_type count) noexcept {
     assert(count <= CAPACITY &&
            "Count exceeds maximum capacity of static vector.");
@@ -601,7 +608,7 @@ class StaticVector {
     }
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   constexpr auto insert(const_iterator pos, const Element& value) noexcept
       -> const_iterator {
     assert(m_size < CAPACITY && "Size may not exceed capacity.");
@@ -617,7 +624,7 @@ class StaticVector {
     return pos;
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   constexpr auto insert(const_iterator pos, Element&& value) noexcept
       -> const_iterator {
     assert(m_size < CAPACITY && "Size may not exceed capacity.");
@@ -633,7 +640,7 @@ class StaticVector {
     return pos;
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   constexpr auto erase(iterator pos) noexcept -> iterator {
     return erase(pos, std::next(pos));
   }
@@ -667,7 +674,7 @@ class StaticVector {
     return first;
   }
 
-  // -----------------------------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
   // TODO:
   // - insert_range
   // - emplace
